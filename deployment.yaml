@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loadtest-utilities
+  namespace: loadtest-utilities
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: load-testing-ui
+  template:
+    metadata:
+      labels:
+        app: load-testing-ui
+    spec:
+      containers:
+      - name: load-testing-ui
+        image: us-ashburn-1.ocir.io/axoxdievda5j/language-service-loadtest-utilities:0.1.2
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: loadtest-utilities
+  namespace: loadtest-utilities
+spec:
+  type: NodePort
+  selector:
+    app: load-testing-ui
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+      nodePort: 30001
